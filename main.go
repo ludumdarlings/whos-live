@@ -3,9 +3,9 @@ package main
 // Importing dependencies
 import (
 	// "log"
-	// "encoding/json"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	// "io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -81,7 +81,8 @@ func init() {
 			"8bitoffun",
 			"idaikoruberu",
 			"ishadaha",
-		}*/
+		}
+	*/
 }
 
 func main() {
@@ -91,9 +92,12 @@ func main() {
 	fmt.Println(err)
 	req.Header.Add("Client-ID", clientID)
 	resp, err := client.Do(req)
-	body, err := ioutil.ReadAll(resp.Body)
-	bodyString := string(body)
-	fmt.Println(resp)
-	fmt.Println("butts")
-	fmt.Println(bodyString)
+	defer resp.Body.Close()
+
+	var dat map[string]interface{}
+
+	if err := json.NewDecoder(resp.Body).Decode(&dat); err != nil {
+		panic(err)
+	}
+	fmt.Println(dat["data"])
 }
